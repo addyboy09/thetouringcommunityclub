@@ -56,8 +56,8 @@ export const recommendedSites: RecommendedSite[] = [
     review: { author: "Mark & Julie, Yorkshire", text: "Woke to mist on the loch and ospreys overhead. Pitches are flat, staff couldn't be friendlier. We'll be back every summer." },
   },
   {
-    slug: "wooda-farm-holiday-park",
-    name: "Wooda Farm Holiday Park",
+    slug: "BLANK",
+    name: "BLANK",
     location: "Bude, Cornwall",
     rating: 4.8,
     tag: "Family",
