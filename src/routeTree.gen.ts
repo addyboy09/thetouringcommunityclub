@@ -9,8 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecommendedRouteImport } from './routes/recommended'
+import { Route as DiscountsRouteImport } from './routes/discounts'
+import { Route as ApprovedRouteImport } from './routes/approved'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RecommendedRoute = RecommendedRouteImport.update({
+  id: '/recommended',
+  path: '/recommended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscountsRoute = DiscountsRouteImport.update({
+  id: '/discounts',
+  path: '/discounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApprovedRoute = ApprovedRouteImport.update({
+  id: '/approved',
+  path: '/approved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +37,61 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/approved': typeof ApprovedRoute
+  '/discounts': typeof DiscountsRoute
+  '/recommended': typeof RecommendedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/approved': typeof ApprovedRoute
+  '/discounts': typeof DiscountsRoute
+  '/recommended': typeof RecommendedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/approved': typeof ApprovedRoute
+  '/discounts': typeof DiscountsRoute
+  '/recommended': typeof RecommendedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/approved' | '/discounts' | '/recommended'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/approved' | '/discounts' | '/recommended'
+  id: '__root__' | '/' | '/approved' | '/discounts' | '/recommended'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApprovedRoute: typeof ApprovedRoute
+  DiscountsRoute: typeof DiscountsRoute
+  RecommendedRoute: typeof RecommendedRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recommended': {
+      id: '/recommended'
+      path: '/recommended'
+      fullPath: '/recommended'
+      preLoaderRoute: typeof RecommendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discounts': {
+      id: '/discounts'
+      path: '/discounts'
+      fullPath: '/discounts'
+      preLoaderRoute: typeof DiscountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/approved': {
+      id: '/approved'
+      path: '/approved'
+      fullPath: '/approved'
+      preLoaderRoute: typeof ApprovedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +104,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApprovedRoute: ApprovedRoute,
+  DiscountsRoute: DiscountsRoute,
+  RecommendedRoute: RecommendedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
