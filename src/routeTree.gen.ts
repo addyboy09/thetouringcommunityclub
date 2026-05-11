@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RecommendedRouteImport } from './routes/recommended'
 import { Route as MeetupsRouteImport } from './routes/meetups'
 import { Route as DiscountsRouteImport } from './routes/discounts'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApprovedRouteImport } from './routes/approved'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecommendedSlugRouteImport } from './routes/recommended.$slug'
 import { Route as ApprovedSlugRouteImport } from './routes/approved.$slug'
@@ -32,9 +34,19 @@ const DiscountsRoute = DiscountsRouteImport.update({
   path: '/discounts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApprovedRoute = ApprovedRouteImport.update({
   id: '/approved',
   path: '/approved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,7 +67,9 @@ const ApprovedSlugRoute = ApprovedSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/approved': typeof ApprovedRouteWithChildren
+  '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
   '/recommended': typeof RecommendedRouteWithChildren
@@ -64,7 +78,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/approved': typeof ApprovedRouteWithChildren
+  '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
   '/recommended': typeof RecommendedRouteWithChildren
@@ -74,7 +90,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/approved': typeof ApprovedRouteWithChildren
+  '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
   '/recommended': typeof RecommendedRouteWithChildren
@@ -85,7 +103,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/approved'
+    | '/auth'
     | '/discounts'
     | '/meetups'
     | '/recommended'
@@ -94,7 +114,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/approved'
+    | '/auth'
     | '/discounts'
     | '/meetups'
     | '/recommended'
@@ -103,7 +125,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/approved'
+    | '/auth'
     | '/discounts'
     | '/meetups'
     | '/recommended'
@@ -113,7 +137,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ApprovedRoute: typeof ApprovedRouteWithChildren
+  AuthRoute: typeof AuthRoute
   DiscountsRoute: typeof DiscountsRoute
   MeetupsRoute: typeof MeetupsRoute
   RecommendedRoute: typeof RecommendedRouteWithChildren
@@ -142,11 +168,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscountsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/approved': {
       id: '/approved'
       path: '/approved'
       fullPath: '/approved'
       preLoaderRoute: typeof ApprovedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -199,7 +239,9 @@ const RecommendedRouteWithChildren = RecommendedRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ApprovedRoute: ApprovedRouteWithChildren,
+  AuthRoute: AuthRoute,
   DiscountsRoute: DiscountsRoute,
   MeetupsRoute: MeetupsRoute,
   RecommendedRoute: RecommendedRouteWithChildren,

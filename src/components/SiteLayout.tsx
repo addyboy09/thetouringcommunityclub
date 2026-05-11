@@ -55,7 +55,10 @@ export function SiteLayout() {
             <img src={logo} alt="" className="h-9 w-9 rounded-full object-cover" />
             <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} The Touring Community Club</p>
           </div>
-          <p className="text-xs text-muted-foreground">Find us on Facebook · TikTok · Instagram</p>
+          <div className="flex items-center gap-4">
+            <p className="text-xs text-muted-foreground">Find us on Facebook · TikTok · Instagram</p>
+            <Link to="/admin" className="text-xs text-muted-foreground hover:text-primary">Admin</Link>
+          </div>
         </div>
       </footer>
     </div>
