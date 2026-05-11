@@ -49,7 +49,7 @@ export const recommendedSites: RecommendedSite[] = [
     name: "Wagtail Country Park",
     location: "Mansfield, England",
     rating: 4.9,
-    tag: "Family",
+    tag: "Views",
     desc: "Spacious touring pitches, fishing lakes, wildlife rich surroundings and dog friendly.",
     amenities: ["Fishing Lake", "Hot showers", "Electric hook-ups", "Dog friendly", "Forest walks", ""],
     photos: pics(https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1c/39/e7/e7/wagtail-country-park.jpg?w=1100&h=600&s=1),
