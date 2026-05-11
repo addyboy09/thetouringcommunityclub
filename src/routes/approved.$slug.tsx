@@ -53,7 +53,7 @@ function SiteDetail() {
           <img src={site.photos[0]} alt={site.name} className="h-full w-full object-cover" />
         </div>
         <div className="grid gap-3">
-          {site.photos.slice(1, 3).map((p, i) => (
+          {site.photos.slice(1, 3).map((p: string, i: number) => (
             <div key={i} className="aspect-[16/10] sm:aspect-auto sm:h-full overflow-hidden rounded-2xl bg-muted">
               <img src={p} alt={`${site.name} ${i + 2}`} className="h-full w-full object-cover" />
             </div>
@@ -65,7 +65,7 @@ function SiteDetail() {
         <section>
           <h2 className="text-xl font-bold text-foreground">Amenities</h2>
           <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {site.amenities.map((a) => (
+            {site.amenities.map((a: string) => (
               <li key={a} className="flex items-center gap-2 text-sm text-foreground/85">
                 <Check className="h-4 w-4 text-primary" /> {a}
               </li>
