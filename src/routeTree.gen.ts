@@ -13,6 +13,8 @@ import { Route as RecommendedRouteImport } from './routes/recommended'
 import { Route as DiscountsRouteImport } from './routes/discounts'
 import { Route as ApprovedRouteImport } from './routes/approved'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RecommendedSlugRouteImport } from './routes/recommended.$slug'
+import { Route as ApprovedSlugRouteImport } from './routes/approved.$slug'
 
 const RecommendedRoute = RecommendedRouteImport.update({
   id: '/recommended',
@@ -34,39 +36,74 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecommendedSlugRoute = RecommendedSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => RecommendedRoute,
+} as any)
+const ApprovedSlugRoute = ApprovedSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ApprovedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/approved': typeof ApprovedRoute
+  '/approved': typeof ApprovedRouteWithChildren
   '/discounts': typeof DiscountsRoute
-  '/recommended': typeof RecommendedRoute
+  '/recommended': typeof RecommendedRouteWithChildren
+  '/approved/$slug': typeof ApprovedSlugRoute
+  '/recommended/$slug': typeof RecommendedSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/approved': typeof ApprovedRoute
+  '/approved': typeof ApprovedRouteWithChildren
   '/discounts': typeof DiscountsRoute
-  '/recommended': typeof RecommendedRoute
+  '/recommended': typeof RecommendedRouteWithChildren
+  '/approved/$slug': typeof ApprovedSlugRoute
+  '/recommended/$slug': typeof RecommendedSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/approved': typeof ApprovedRoute
+  '/approved': typeof ApprovedRouteWithChildren
   '/discounts': typeof DiscountsRoute
-  '/recommended': typeof RecommendedRoute
+  '/recommended': typeof RecommendedRouteWithChildren
+  '/approved/$slug': typeof ApprovedSlugRoute
+  '/recommended/$slug': typeof RecommendedSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/approved' | '/discounts' | '/recommended'
+  fullPaths:
+    | '/'
+    | '/approved'
+    | '/discounts'
+    | '/recommended'
+    | '/approved/$slug'
+    | '/recommended/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/approved' | '/discounts' | '/recommended'
-  id: '__root__' | '/' | '/approved' | '/discounts' | '/recommended'
+  to:
+    | '/'
+    | '/approved'
+    | '/discounts'
+    | '/recommended'
+    | '/approved/$slug'
+    | '/recommended/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/approved'
+    | '/discounts'
+    | '/recommended'
+    | '/approved/$slug'
+    | '/recommended/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApprovedRoute: typeof ApprovedRoute
+  ApprovedRoute: typeof ApprovedRouteWithChildren
   DiscountsRoute: typeof DiscountsRoute
-  RecommendedRoute: typeof RecommendedRoute
+  RecommendedRoute: typeof RecommendedRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -99,14 +136,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recommended/$slug': {
+      id: '/recommended/$slug'
+      path: '/$slug'
+      fullPath: '/recommended/$slug'
+      preLoaderRoute: typeof RecommendedSlugRouteImport
+      parentRoute: typeof RecommendedRoute
+    }
+    '/approved/$slug': {
+      id: '/approved/$slug'
+      path: '/$slug'
+      fullPath: '/approved/$slug'
+      preLoaderRoute: typeof ApprovedSlugRouteImport
+      parentRoute: typeof ApprovedRoute
+    }
   }
 }
 
+interface ApprovedRouteChildren {
+  ApprovedSlugRoute: typeof ApprovedSlugRoute
+}
+
+const ApprovedRouteChildren: ApprovedRouteChildren = {
+  ApprovedSlugRoute: ApprovedSlugRoute,
+}
+
+const ApprovedRouteWithChildren = ApprovedRoute._addFileChildren(
+  ApprovedRouteChildren,
+)
+
+interface RecommendedRouteChildren {
+  RecommendedSlugRoute: typeof RecommendedSlugRoute
+}
+
+const RecommendedRouteChildren: RecommendedRouteChildren = {
+  RecommendedSlugRoute: RecommendedSlugRoute,
+}
+
+const RecommendedRouteWithChildren = RecommendedRoute._addFileChildren(
+  RecommendedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApprovedRoute: ApprovedRoute,
+  ApprovedRoute: ApprovedRouteWithChildren,
   DiscountsRoute: DiscountsRoute,
-  RecommendedRoute: RecommendedRoute,
+  RecommendedRoute: RecommendedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
