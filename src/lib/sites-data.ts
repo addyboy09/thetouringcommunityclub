@@ -52,7 +52,7 @@ export const recommendedSites: RecommendedSite[] = [
     tag: "Views",
     desc: "Spacious touring pitches, fishing lakes, wildlife-rich surroundings and dog friendly.",
     amenities: ["Fishing Lake", "Hot showers", "Electric hook-ups", "Dog friendly", "Forest walks", ""],
-    photos: picshttps://wagtailcountrypark.co.uk/wp-content/uploads/2018/10/Wagtail-busy-1-1030x687.jpg(0),
+    photos: pics https://wagtailcountrypark.co.uk/wp-content/uploads/2018/10/Wagtail-busy-1-1030x687.jpg(0),
     review: { author: "Mark & Julie, Yorkshire", text: "Woke to mist on the loch and ospreys overhead. Pitches are flat, staff couldn't be friendlier. We'll be back every summer." },
   },
   {
