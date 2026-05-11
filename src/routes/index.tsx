@@ -19,7 +19,7 @@ function Home() {
             Tour together. Stay smarter. Save more.
           </h1>
           <p className="mt-5 max-w-xl text-lg opacity-95">
-            Join thousands of touring families discovering the UK's best campsites, hidden gems and exclusive member discounts.
+            Join thousands of touring members discovering the UK's best campsites, hidden gems and exclusive member discounts.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/recommended" className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-semibold text-secondary-foreground hover:opacity-95 transition">
@@ -35,10 +35,10 @@ function Home() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Users, label: "Members", value: "12,400+" },
-            { icon: MapPin, label: "Sites Listed", value: "320" },
-            { icon: ShieldCheck, label: "Club Approved", value: "85" },
-            { icon: Tag, label: "Active Discounts", value: "40+" },
+            { icon: Users, label: "Members", value: "2600+" },
+            { icon: MapPin, label: "Sites Listed", value: "0" },
+            { icon: ShieldCheck, label: "Club Approved", value: "0" },
+            { icon: Tag, label: "Active Discounts", value: "0" },
           ].map((s) => (
             <div key={s.label} className="rounded-2xl border border-border bg-card p-6" style={{ boxShadow: "var(--shadow-soft)" }}>
               <s.icon className="h-6 w-6 text-primary" />
