@@ -52,8 +52,8 @@ export const recommendedSites: RecommendedSite[] = [
     tag: "Views",
     desc: "Spacious touring pitches, fishing lakes, wildlife rich surroundings and dog friendly.",
     amenities: ["Fishing Lake", "Hot showers", "Electric hook-ups", "Dog friendly", "Forest walks", ""],
-    photos
-    review: { author: ", Yorkshire", text: "Woke to mist on the loch and ospreys overhead. Pitches are flat, staff couldn't be friendlier. We'll be back every summer." },
+    photos: pics(0),
+    review: { author: "John, Yorkshire", text: "Woke to mist on the loch and ospreys overhead. Pitches are flat, staff couldn't be friendlier. We'll be back every summer." },
   },
   {
     slug: "BLANK",
