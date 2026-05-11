@@ -5,6 +5,7 @@ const navItems = [
   { to: "/", label: "Home" },
   { to: "/recommended", label: "Recommended Sites" },
   { to: "/approved", label: "Approved Sites" },
+  { to: "/meetups", label: "Meet Ups" },
   { to: "/discounts", label: "Discounts" },
 ] as const;
 
