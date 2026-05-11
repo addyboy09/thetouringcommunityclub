@@ -45,14 +45,14 @@ const pics = (offset: number, count = 3) =>
 
 export const recommendedSites: RecommendedSite[] = [
   {
-    slug: "glenmore-campsite",
-    name: "Glenmore Campsite",
-    location: "Cairngorms, Scotland",
-    rating: 4.9,
-    tag: "Lochside",
-    desc: "Pitch beside Loch Morlich with the Cairngorms as your backdrop. Perfect for hikers and paddlers.",
-    amenities: ["Lochside pitches", "Hot showers", "Electric hook-ups", "Dog friendly", "Forest walks", "Watersports launch"],
-    photos: pics(0),
+    slug: "Wagtail Country Park",
+    name: "Wagtail Country Park",
+    location: "Mansfield, England",
+    rating: 5.0,
+    tag: "Views",
+    desc: "Spacious touring pitches, fishing lakes, wildlife-rich surroundings and dog friendly.",
+    amenities: ["Fishing Lake", "Hot showers", "Electric hook-ups", "Dog friendly", "Forest walks", ""],
+    photos: picshttps://wagtailcountrypark.co.uk/wp-content/uploads/2018/10/Wagtail-busy-1-1030x687.jpg(0),
     review: { author: "Mark & Julie, Yorkshire", text: "Woke to mist on the loch and ospreys overhead. Pitches are flat, staff couldn't be friendlier. We'll be back every summer." },
   },
   {
