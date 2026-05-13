@@ -1,208 +1,192 @@
-import { createSignal, Show, createEffect } from "solid-js";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { supabase } from "../lib/supabase";
-import { Link, useNavigate, useSearchParams } from "@solidjs/router";
 
-export default function Auth() {
+type FormValues = {
+  name?: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+};
+
+export const Route = new Route({
+  path: "/auth",
+  component: AuthPage,
+});
+
+function AuthPage() {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
+  const search = useSearch<{ mode?: string }>();
+  const mode = search.mode === "signup" ? "signup" : "signin";
 
-  const [mode, setMode] = createSignal<"signin" | "signup">(
-    params.mode === "signup" ? "signup" : "signin"
-  );
+  const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [email, setEmail] = createSignal("");
-  const [password, setPassword] = createSignal("");
-  const [confirmPassword, setConfirmPassword] = createSignal("");
-  const [name, setName] = createSignal("");
-  const [busy, setBusy] = createSignal(false);
-  const [error, setError] = createSignal("");
-  const [success, setSuccess] = createSignal("");
-  const [showPassword, setShowPassword] = createSignal(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>();
 
-  // Clear errors/success when mode changes
-  createEffect(() => {
-    mode();
-    setError("");
+  const password = watch("password");
+
+  const onSubmit = async (data: FormValues) => {
+    setServerError("");
     setSuccess("");
-    setPassword("");
-    setConfirmPassword("");
-  });
-
-  const submit = async (e: Event) => {
-    e.preventDefault();
-    setBusy(true);
-    setError("");
-    setSuccess("");
-
-    if (mode() === "signup" && password() !== confirmPassword()) {
-      setBusy(false);
-      setError("Passwords do not match.");
-      return;
-    }
 
     try {
-      if (mode() === "signup") {
+      if (mode === "signup") {
+        if (data.password !== data.confirmPassword) {
+          setServerError("Passwords do not match");
+          return;
+        }
+
         const { error } = await supabase.auth.signUp({
-          email: email(),
-          password: password(),
+          email: data.email,
+          password: data.password,
           options: {
-            data: { name: name() }
-          }
+            data: { name: data.name },
+          },
         });
+
         if (error) throw error;
-        setSuccess("Account created! Redirecting you to the members area…");
+
+        setSuccess("Account created! Redirecting…");
       } else {
         const { error } = await supabase.auth.signInWithPassword({
-          email: email(),
-          password: password()
+          email: data.email,
+          password: data.password,
         });
+
         if (error) throw error;
-        setSuccess("Signed in successfully! Redirecting you to the members area…");
+
+        setSuccess("Signed in! Redirecting…");
       }
 
-      // Small delay so the success message is visible
-      setTimeout(() => {
-        navigate("/members");
-      }, 1200);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication failed");
-    } finally {
-      setBusy(false);
+      setTimeout(() => navigate({ to: "/members" }), 1200);
+    } catch (err: any) {
+      setServerError(err.message || "Authentication failed");
     }
   };
-
-  const inputBaseClasses =
-    "mt-1 w-full rounded-md border bg-background px-3 py-2 text-sm " +
-    "focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary";
-
-  const errorBorderClasses = " border-destructive";
-  const normalBorderClasses = " border-border";
-
-  const passwordType = () => (showPassword() ? "text" : "password");
 
   return (
     <section className="mx-auto max-w-md px-4 py-12">
       <h1 className="text-3xl font-bold text-foreground">
-        {mode() === "signin" ? "Sign in" : "Join the members area"}
+        {mode === "signin" ? "Sign in" : "Join the members area"}
       </h1>
 
       <p className="mt-2 text-sm text-muted-foreground">
-        {mode() === "signup"
+        {mode === "signup"
           ? "Sign up to unlock the members-only section — exclusive recommended sites, member discounts and community meet ups."
           : "Welcome back. Sign in to access the members area."}
       </p>
 
-      <form onSubmit={submit} className="mt-6 space-y-4">
-        <Show when={mode() === "signup"}>
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+        {mode === "signup" && (
           <div>
             <label className="block text-sm font-medium text-foreground">Name</label>
             <input
-              type="text"
-              required
-              value={name()}
-              onInput={(e) => setName(e.currentTarget.value)}
-              className={
-                inputBaseClasses +
-                (error() && !name() ? errorBorderClasses : normalBorderClasses)
-              }
+              {...register("name", { required: true })}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
+            {errors.name && (
+              <p className="text-xs text-destructive mt-1">Name is required</p>
+            )}
           </div>
-        </Show>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-foreground">Email</label>
           <input
+            {...register("email", { required: true })}
             type="email"
-            required
-            value={email()}
-            onInput={(e) => setEmail(e.currentTarget.value)}
-            className={
-              inputBaseClasses +
-              (error() && !email() ? errorBorderClasses : normalBorderClasses)
-            }
+            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm
+                       focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
+          {errors.email && (
+            <p className="text-xs text-destructive mt-1">Email is required</p>
+          )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-foreground">Password</label>
           <div className="relative">
             <input
-              type={passwordType()}
-              required
-              minLength={6}
-              value={password()}
-              onInput={(e) => setPassword(e.currentTarget.value)}
-              className={
-                inputBaseClasses +
-                (error() && !password() ? errorBorderClasses : normalBorderClasses) +
-                " pr-10"
-              }
+              {...register("password", { required: true, minLength: 6 })}
+              type={showPassword ? "text" : "password"}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm pr-10
+                         focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword())}
+              onClick={() => setShowPassword((v) => !v)}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-muted-foreground hover:text-foreground"
             >
-              {showPassword() ? "Hide" : "Show"}
+              {showPassword ? "Hide" : "Show"}
             </button>
           </div>
+          {errors.password && (
+            <p className="text-xs text-destructive mt-1">
+              Password must be at least 6 characters
+            </p>
+          )}
         </div>
 
-        <Show when={mode() === "signup"}>
+        {mode === "signup" && (
           <div>
             <label className="block text-sm font-medium text-foreground">
               Confirm password
             </label>
             <input
-              type={passwordType()}
-              required
-              minLength={6}
-              value={confirmPassword()}
-              onInput={(e) => setConfirmPassword(e.currentTarget.value)}
-              className={
-                inputBaseClasses +
-                (error() && password() !== confirmPassword()
-                  ? errorBorderClasses
-                  : normalBorderClasses)
-              }
+              {...register("confirmPassword", { required: true })}
+              type={showPassword ? "text" : "password"}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             />
-            <Show when={password() && confirmPassword() && password() !== confirmPassword()}>
-              <p className="mt-1 text-xs text-destructive">Passwords do not match.</p>
-            </Show>
+            {errors.confirmPassword && (
+              <p className="text-xs text-destructive mt-1">Please confirm password</p>
+            )}
+            {password && watch("confirmPassword") !== password && (
+              <p className="text-xs text-destructive mt-1">Passwords do not match</p>
+            )}
           </div>
-        </Show>
+        )}
 
-        <Show when={error()}>
-          <p className="text-sm text-destructive">{error()}</p>
-        </Show>
+        {serverError && (
+          <p className="text-sm text-destructive">{serverError}</p>
+        )}
 
-        <Show when={success()}>
-          <p className="text-sm text-emerald-600">{success()}</p>
-        </Show>
+        {success && (
+          <p className="text-sm text-emerald-600">{success}</p>
+        )}
 
         <button
           type="submit"
-          disabled={busy()}
+          disabled={isSubmitting}
           className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground
                      hover:bg-primary/90 disabled:opacity-60"
         >
-          {busy()
+          {isSubmitting
             ? "Please wait…"
-            : mode() === "signin"
+            : mode === "signin"
             ? "Sign in"
             : "Create account"}
         </button>
       </form>
 
-      <button
-        type="button"
-        onClick={() => setMode(mode() === "signin" ? "signup" : "signin")}
-        className="mt-4 text-sm text-primary hover:underline"
+      <Link
+        to="/auth"
+        search={{ mode: mode === "signin" ? "signup" : "signin" }}
+        className="mt-4 inline-block text-sm text-primary hover:underline"
       >
-        {mode() === "signin"
+        {mode === "signin"
           ? "Need an account? Sign up"
           : "Already have an account? Sign in"}
-      </button>
+      </Link>
 
       <div className="mt-8">
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
