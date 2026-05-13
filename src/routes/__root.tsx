@@ -11,6 +11,18 @@ import {
 import appCss from "../styles.css?url";
 import { SiteLayout } from "@/components/SiteLayout";
 
+// Import all your route files
+import { Route as AuthRoute } from "./auth";
+import { Route as MembersRoute } from "./members";
+import { Route as DiscountsRoute } from "./discounts";
+import { Route as MeetupsRoute } from "./meetups";
+import { Route as ApprovedRoute } from "./approved";
+import { Route as ApprovedSlugRoute } from "./approved.$slug";
+import { Route as RecommendedRoute } from "./recommended";
+import { Route as RecommendedSlugRoute } from "./recommended.$slug";
+import { Route as AdminRoute } from "./admin";
+import { Route as IndexRoute } from "./index";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -59,14 +71,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "The Touring Community Club" },
       { name: "description", content: "A friendly UK caravan and motorhome touring community — recommended sites, approved campsites, and member discounts." },
-      { property: "og:title", content: "The Touring Community Club" },
-      { name: "twitter:title", content: "The Touring Community Club" },
-      { property: "og:description", content: "A friendly UK caravan and motorhome touring community — recommended sites, approved campsites, and member discounts." },
-      { name: "twitter:description", content: "A friendly UK caravan and motorhome touring community — recommended sites, approved campsites, and member discounts." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/ae8b3f0a-e984-44b9-9c1f-b3a4a3396ea7" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/ae8b3f0a-e984-44b9-9c1f-b3a4a3396ea7" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:type", content: "website" },
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
@@ -75,6 +79,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
+// REGISTER ALL ROUTES HERE
+AuthRoute.addToParent(Route);
+MembersRoute.addToParent(Route);
+DiscountsRoute.addToParent(Route);
+MeetupsRoute.addToParent(Route);
+ApprovedRoute.addToParent(Route);
+ApprovedSlugRoute.addToParent(Route);
+RecommendedRoute.addToParent(Route);
+RecommendedSlugRoute.addToParent(Route);
+AdminRoute.addToParent(Route);
+IndexRoute.addToParent(Route);
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
