@@ -22,8 +22,8 @@ function Home() {
             Join thousands of touring members discovering the UK's best campsites, hidden gems and exclusive member discounts.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/recommended" className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-semibold text-secondary-foreground hover:opacity-95 transition">
-              Explore Recommended Sites
+            <Link to="/auth" search={{ mode: "signup" }} className="inline-flex items-center gap-2 rounded-full bg-secondary px-6 py-3 text-sm font-semibold text-secondary-foreground hover:opacity-95 transition">
+              Sign Up
             </Link>
             <Link to="/discounts" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-sm font-semibold hover:bg-white/10 transition">
               View Member Discounts
