@@ -33,6 +33,7 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
+          name,
           email,
           password,
           options: { emailRedirectTo: `${window.location.origin}/members` },
