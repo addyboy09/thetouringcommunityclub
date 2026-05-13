@@ -59,7 +59,16 @@ function AuthPage() {
           ? "Sign up to unlock the members-only section — exclusive recommended sites, member discounts and community meet ups."
           : "Welcome back. Sign in to access the members area."}
       </p>
-
+<div>
+  <label className="block text-sm font-medium text-foreground">Name</label>
+  <input
+    type="text"
+    required={mode === "signup"}
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+  />
+</div>
       <form onSubmit={submit} className="mt-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-foreground">Email</label>
