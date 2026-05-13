@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RecommendedRouteImport } from './routes/recommended'
+import { Route as MembersRouteImport } from './routes/members'
 import { Route as MeetupsRouteImport } from './routes/meetups'
 import { Route as DiscountsRouteImport } from './routes/discounts'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -22,6 +23,11 @@ import { Route as ApprovedSlugRouteImport } from './routes/approved.$slug'
 const RecommendedRoute = RecommendedRouteImport.update({
   id: '/recommended',
   path: '/recommended',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersRoute = MembersRouteImport.update({
+  id: '/members',
+  path: '/members',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeetupsRoute = MeetupsRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
+  '/members': typeof MembersRoute
   '/recommended': typeof RecommendedRouteWithChildren
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
+  '/members': typeof MembersRoute
   '/recommended': typeof RecommendedRouteWithChildren
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
   '/meetups': typeof MeetupsRoute
+  '/members': typeof MembersRoute
   '/recommended': typeof RecommendedRouteWithChildren
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/discounts'
     | '/meetups'
+    | '/members'
     | '/recommended'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/discounts'
     | '/meetups'
+    | '/members'
     | '/recommended'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/discounts'
     | '/meetups'
+    | '/members'
     | '/recommended'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DiscountsRoute: typeof DiscountsRoute
   MeetupsRoute: typeof MeetupsRoute
+  MembersRoute: typeof MembersRoute
   RecommendedRoute: typeof RecommendedRouteWithChildren
 }
 
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       path: '/recommended'
       fullPath: '/recommended'
       preLoaderRoute: typeof RecommendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members': {
+      id: '/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof MembersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meetups': {
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DiscountsRoute: DiscountsRoute,
   MeetupsRoute: MeetupsRoute,
+  MembersRoute: MembersRoute,
   RecommendedRoute: RecommendedRouteWithChildren,
 }
 export const routeTree = rootRouteImport
