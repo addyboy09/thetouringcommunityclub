@@ -11,58 +11,9 @@ import {
 import appCss from "../styles.css?url";
 import { SiteLayout } from "@/components/SiteLayout";
 
-// Import all your route files
-import { Route as AuthRoute } from "./auth";
-import { Route as MembersRoute } from "./members";
-import { Route as DiscountsRoute } from "./discounts";
-import { Route as MeetupsRoute } from "./meetups";
-import { Route as ApprovedRoute } from "./approved";
-import { Route as ApprovedSlugRoute } from "./approved.$slug";
-import { Route as RecommendedRoute } from "./recommended";
-import { Route as RecommendedSlugRoute } from "./recommended.$slug";
-import { Route as AdminRoute } from "./admin";
-import { Route as IndexRoute } from "./index";
+function NotFoundComponent() { ... }
 
-function NotFoundComponent() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
-  const router = useRouter();
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold text-foreground">Something went wrong</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
-        <button
-          onClick={() => { router.invalidate(); reset(); }}
-          className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
-  );
-}
+function ErrorComponent({ error, reset }) { ... }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -80,19 +31,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-// REGISTER ALL ROUTES HERE
-AuthRoute.addToParent(Route);
-MembersRoute.addToParent(Route);
-DiscountsRoute.addToParent(Route);
-MeetupsRoute.addToParent(Route);
-ApprovedRoute.addToParent(Route);
-ApprovedSlugRoute.addToParent(Route);
-RecommendedRoute.addToParent(Route);
-RecommendedSlugRoute.addToParent(Route);
-AdminRoute.addToParent(Route);
-IndexRoute.addToParent(Route);
-
-function RootShell({ children }: { children: React.ReactNode }) {
+function RootShell({ children }) {
   return (
     <html lang="en">
       <head><HeadContent /></head>
@@ -106,6 +45,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SiteLayout />
+      <Outlet />
     </QueryClientProvider>
   );
 }
