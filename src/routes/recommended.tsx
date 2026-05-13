@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, Star } from "lucide-react";
 import { recommendedSites } from "@/lib/sites-data";
+import { RequireMember } from "@/components/RequireMember";
 
 export const Route = createFileRoute("/recommended")({
   component: Recommended,
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/recommended")({
 
 function Recommended() {
   return (
+    <RequireMember>
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
       <header className="max-w-2xl">
         <p className="text-sm font-medium uppercase tracking-wider text-primary">Member Picks</p>
@@ -46,5 +48,6 @@ function Recommended() {
         ))}
       </div>
     </section>
+    </RequireMember>
   );
 }

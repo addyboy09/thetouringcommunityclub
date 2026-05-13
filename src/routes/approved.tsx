@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ShieldCheck, MapPin } from "lucide-react";
+import { RequireMember } from "@/components/RequireMember";
 import { approvedSites } from "@/lib/sites-data";
 
 export const Route = createFileRoute("/approved")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/approved")({
 
 function Approved() {
   return (
+    <RequireMember>
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
       <header className="max-w-2xl">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -44,5 +46,6 @@ function Approved() {
         ))}
       </div>
     </section>
+    </RequireMember>
   );
 }

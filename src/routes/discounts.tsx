@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Tag, Percent } from "lucide-react";
+import { RequireMember } from "@/components/RequireMember";
 
 export const Route = createFileRoute("/discounts")({
   component: Discounts,
@@ -19,6 +20,7 @@ const discounts = [
 
 function Discounts() {
   return (
+    <RequireMember>
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
       <header className="max-w-2xl">
         <p className="text-sm font-medium uppercase tracking-wider text-accent">Members Only</p>
@@ -50,5 +52,6 @@ function Discounts() {
         ))}
       </div>
     </section>
+    </RequireMember>
   );
 }
