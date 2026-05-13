@@ -16,6 +16,7 @@ function AuthPage() {
   const { mode: initialMode } = Route.useSearch();
   const { session, isAdmin, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
