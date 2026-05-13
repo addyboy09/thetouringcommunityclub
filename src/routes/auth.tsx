@@ -63,10 +63,6 @@ function AuthPage() {
       <form onSubmit={submit} className="mt-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-foreground">Email</label>
-           <input
-            type="name"
-            required
-            value={name}
           <input
             type="email"
             required
