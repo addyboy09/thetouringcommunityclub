@@ -14,7 +14,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { mode: initialMode } = Route.useSearch();
-  const { session, loading } = useAuth();
+  const { session, isAdmin, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,8 +22,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && session) navigate({ to: "/admin" });
-  }, [session, loading, navigate]);
+    if (!loading && session) navigate({ to: isAdmin ? "/admin" : "/members" });
+  }, [session, isAdmin, loading, navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,14 +34,14 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
+          options: { emailRedirectTo: `${window.location.origin}/members` },
         });
         if (error) throw error;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      navigate({ to: "/admin" });
+      navigate({ to: "/members" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -52,12 +52,12 @@ function AuthPage() {
   return (
     <section className="mx-auto max-w-md px-4 py-12">
       <h1 className="text-3xl font-bold text-foreground">
-        {mode === "signin" ? "Sign in" : "Create admin account"}
+        {mode === "signin" ? "Sign in" : "Join the members area"}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {mode === "signup"
-          ? "The first account created becomes the site admin."
-          : "Admin access for managing meet ups."}
+          ? "Sign up to unlock the members-only section — exclusive recommended sites, member discounts and community meet ups."
+          : "Welcome back. Sign in to access the members area."}
       </p>
 
       <form onSubmit={submit} className="mt-6 space-y-4">
