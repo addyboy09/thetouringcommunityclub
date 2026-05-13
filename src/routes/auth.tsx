@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../integrations/supabase/client.server";
 
 type FormValues = {
   name?: string;
