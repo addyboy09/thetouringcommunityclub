@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { RequireMember } from "@/components/RequireMember";
 
 export const Route = createFileRoute("/meetups")({
   component: Meetups,
@@ -39,6 +40,7 @@ function Meetups() {
   }, []);
 
   return (
+    <RequireMember>
     <section className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
       <header className="max-w-2xl">
         <p className="text-sm font-medium uppercase tracking-wider text-accent">Get together</p>
@@ -95,5 +97,6 @@ function Meetups() {
         </p>
       </div>
     </section>
+    </RequireMember>
   );
 }
