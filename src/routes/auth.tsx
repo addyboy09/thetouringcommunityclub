@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { supabase } from "../integrations/supabase/client.server";
+import { supabase } from "../integrations/supabase/client";
+import { createFileRoute } from "@tanstack/react-router";
 
 type FormValues = {
   name?: string;
@@ -10,8 +11,8 @@ type FormValues = {
   confirmPassword?: string;
 };
 
-export const Route = new Route({
-  path: "/auth",
+
+export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
