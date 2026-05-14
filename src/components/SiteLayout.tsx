@@ -57,6 +57,7 @@ export function SiteLayout() {
           </div>
           <div className="flex items-center gap-4">
             <p className="text-xs text-muted-foreground">Find us on Facebook · TikTok · Instagram</p>
+            <Link to="/privacy" className="text-xs text-muted-foreground hover:text-primary">Privacy Policy</Link>
             <Link to="/members" className="text-xs text-muted-foreground hover:text-primary">Members</Link>
             <Link to="/admin" className="text-xs text-muted-foreground hover:text-primary">Admin</Link>
           </div>
