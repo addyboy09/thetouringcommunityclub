@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      approved_sites: {
+        Row: {
+          amenities: string[]
+          created_at: string
+          id: string
+          location: string
+          name: string
+          notes: string
+          photos: string[]
+          review_author: string
+          review_text: string
+          slug: string
+          sort_order: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          amenities?: string[]
+          created_at?: string
+          id?: string
+          location?: string
+          name: string
+          notes?: string
+          photos?: string[]
+          review_author?: string
+          review_text?: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          amenities?: string[]
+          created_at?: string
+          id?: string
+          location?: string
+          name?: string
+          notes?: string
+          photos?: string[]
+          review_author?: string
+          review_text?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      discounts: {
+        Row: {
+          brand: string
+          category: string
+          code: string
+          created_at: string
+          description: string
+          id: string
+          off: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          brand: string
+          category?: string
+          code?: string
+          created_at?: string
+          description?: string
+          id?: string
+          off?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          brand?: string
+          category?: string
+          code?: string
+          created_at?: string
+          description?: string
+          id?: string
+          off?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meetups: {
         Row: {
           created_at: string
@@ -49,6 +133,57 @@ export type Database = {
           spaces?: string
           tag?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recommended_sites: {
+        Row: {
+          amenities: string[]
+          created_at: string
+          description: string
+          id: string
+          location: string
+          name: string
+          photos: string[]
+          rating: number
+          review_author: string
+          review_text: string
+          slug: string
+          sort_order: number
+          tag: string
+          updated_at: string
+        }
+        Insert: {
+          amenities?: string[]
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string
+          name: string
+          photos?: string[]
+          rating?: number
+          review_author?: string
+          review_text?: string
+          slug: string
+          sort_order?: number
+          tag?: string
+          updated_at?: string
+        }
+        Update: {
+          amenities?: string[]
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string
+          name?: string
+          photos?: string[]
+          rating?: number
+          review_author?: string
+          review_text?: string
+          slug?: string
+          sort_order?: number
+          tag?: string
           updated_at?: string
         }
         Relationships: []
