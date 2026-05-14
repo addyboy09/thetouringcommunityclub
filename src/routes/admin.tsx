@@ -159,12 +159,17 @@ function AdminPage() {
       const payload: Record<string, unknown> = {};
       for (const fd of section.fields) payload[fd.key] = form[fd.key];
 
+      const table = supabase.from(section.table) as unknown as {
+        update: (v: Record<string, unknown>) => { eq: (col: string, val: string) => Promise<{ error: { message: string } | null }> };
+        insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }>;
+      };
+
       if (editing) {
-        const { error } = await supabase.from(section.table).update(payload).eq("id", editing.id);
-        if (error) throw error;
+        const { error } = await table.update(payload).eq("id", editing.id);
+        if (error) throw new Error(error.message);
       } else {
-        const { error } = await supabase.from(section.table).insert(payload as never);
-        if (error) throw error;
+        const { error } = await table.insert(payload);
+        if (error) throw new Error(error.message);
       }
       await load();
       cancel();
