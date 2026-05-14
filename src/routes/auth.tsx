@@ -13,13 +13,15 @@ type FormValues = {
 
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    mode: s.mode === "signup" ? ("signup" as const) : ("signin" as const),
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
-  const search = useSearch<{ mode?: string }>();
-  const mode = search.mode === "signup" ? "signup" : "signin";
+  const { mode } = Route.useSearch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
