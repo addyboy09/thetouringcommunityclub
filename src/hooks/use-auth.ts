@@ -14,13 +14,15 @@ export function useAuth() {
 
     const checkAdmin = async (userId: string) => {
       setRoleLoading(true);
-      const { data, error } = await supabase.rpc("has_role", {
-        _user_id: userId,
-        _role: "admin",
-      });
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
       if (!mounted) return;
       if (error) console.error("[useAuth] role check failed:", error.message);
-      setIsAdmin(data === true);
+      setIsAdmin(!error && data?.role === "admin");
       setRoleLoading(false);
     };
 
