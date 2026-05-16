@@ -3,17 +3,18 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Trash2, Pencil, Plus, X } from "lucide-react";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
   head: () => ({ meta: [{ title: "Admin — The Touring Community Club" }] }),
 });
 
-type FieldType = "text" | "number" | "textarea" | "list";
+type FieldType = "text" | "number" | "textarea" | "list" | "image" | "image-list";
 type FieldDef = { key: string; label: string; type: FieldType; required?: boolean };
 
 type SectionConfig = {
-  key: "meetups" | "recommended" | "approved" | "discounts";
+  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts";
   label: string;
   table: "meetups" | "recommended_sites" | "approved_sites" | "discounts";
   orderBy: string;
@@ -55,7 +56,7 @@ const SECTIONS: SectionConfig[] = [
       { key: "tag", label: "Tag", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "amenities", label: "Amenities (one per line)", type: "list" },
-      { key: "photos", label: "Photo URLs (one per line)", type: "list" },
+      { key: "photos", label: "Photos", type: "image-list" },
       { key: "review_author", label: "Review author", type: "text" },
       { key: "review_text", label: "Review text", type: "textarea" },
       { key: "sort_order", label: "Sort order", type: "number" },
@@ -75,7 +76,7 @@ const SECTIONS: SectionConfig[] = [
       { key: "year", label: "Year approved", type: "number" },
       { key: "notes", label: "Notes / summary", type: "textarea" },
       { key: "amenities", label: "Amenities (one per line)", type: "list" },
-      { key: "photos", label: "Photo URLs (one per line)", type: "list" },
+      { key: "photos", label: "Photos", type: "image-list" },
       { key: "review_author", label: "Review author", type: "text" },
       { key: "review_text", label: "Review text", type: "textarea" },
       { key: "sort_order", label: "Sort order", type: "number" },
@@ -99,12 +100,33 @@ const SECTIONS: SectionConfig[] = [
   },
 ];
 
+const HOMEPAGE_FIELDS: { key: string; label: string; type: "text" | "textarea" | "image" }[] = [
+  { key: "hero_image_url", label: "Hero background image", type: "image" },
+  { key: "hero_eyebrow", label: "Hero eyebrow (small line above)", type: "text" },
+  { key: "hero_title", label: "Hero headline", type: "textarea" },
+  { key: "hero_subtitle", label: "Hero subtitle", type: "textarea" },
+  { key: "hero_cta_text", label: "Hero button text", type: "text" },
+  { key: "stat_members", label: "Stat — Members", type: "text" },
+  { key: "stat_sites", label: "Stat — Sites Listed", type: "text" },
+  { key: "stat_approved", label: "Stat — Club Approved", type: "text" },
+  { key: "stat_discounts", label: "Stat — Active Discounts", type: "text" },
+  { key: "intro_title", label: "Intro title", type: "text" },
+  { key: "intro_body", label: "Intro body", type: "textarea" },
+  { key: "feature_recommended_title", label: "Card 1 — title", type: "text" },
+  { key: "feature_recommended_body", label: "Card 1 — body", type: "textarea" },
+  { key: "feature_approved_title", label: "Card 2 — title", type: "text" },
+  { key: "feature_approved_body", label: "Card 2 — body", type: "textarea" },
+  { key: "feature_discounts_title", label: "Card 3 — title", type: "text" },
+  { key: "feature_discounts_body", label: "Card 3 — body", type: "textarea" },
+];
+
 type AnyRow = Record<string, unknown> & { id: string };
+type TabKey = SectionConfig["key"];
 
 function emptyForm(section: SectionConfig): Record<string, unknown> {
   const f: Record<string, unknown> = {};
   for (const fd of section.fields) {
-    f[fd.key] = fd.type === "number" ? 0 : fd.type === "list" ? [] : "";
+    f[fd.key] = fd.type === "number" ? 0 : fd.type === "list" || fd.type === "image-list" ? [] : "";
   }
   return f;
 }
@@ -112,80 +134,11 @@ function emptyForm(section: SectionConfig): Record<string, unknown> {
 function AdminPage() {
   const navigate = useNavigate();
   const { user, isAdmin, loading } = useAuth();
-  const [active, setActive] = useState<SectionConfig["key"]>("meetups");
-  const section = useMemo(() => SECTIONS.find((s) => s.key === active)!, [active]);
-
-  const [rows, setRows] = useState<AnyRow[]>([]);
-  const [editing, setEditing] = useState<AnyRow | null>(null);
-  const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState<Record<string, unknown>>({});
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
+  const [active, setActive] = useState<TabKey>("homepage");
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", search: { mode: "signin" } });
   }, [user, loading, navigate]);
-
-  const load = async () => {
-    setErr("");
-    const { data, error } = await supabase.from(section.table).select("*").order(section.orderBy);
-    if (error) setErr(error.message);
-    setRows((data ?? []) as AnyRow[]);
-  };
-
-  useEffect(() => {
-    setEditing(null);
-    setCreating(false);
-    if (user && isAdmin) load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, user, isAdmin]);
-
-  const startEdit = (row: AnyRow) => {
-    setEditing(row);
-    setCreating(false);
-    setForm({ ...row });
-  };
-  const startCreate = () => {
-    setCreating(true);
-    setEditing(null);
-    setForm({ ...emptyForm(section), sort_order: rows.length + 1 });
-  };
-  const cancel = () => { setEditing(null); setCreating(false); };
-
-  const save = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true); setErr("");
-    try {
-      const payload: Record<string, unknown> = {};
-      for (const fd of section.fields) payload[fd.key] = form[fd.key];
-
-      const table = supabase.from(section.table) as unknown as {
-        update: (v: Record<string, unknown>) => { eq: (col: string, val: string) => Promise<{ error: { message: string } | null }> };
-        insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }>;
-      };
-
-      if (editing) {
-        const { error } = await table.update(payload).eq("id", editing.id);
-        if (error) throw new Error(error.message);
-      } else {
-        const { error } = await table.insert(payload);
-        if (error) throw new Error(error.message);
-      }
-      await load();
-      cancel();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Save failed";
-      setErr(msg);
-    } finally { setBusy(false); }
-  };
-
-  const remove = async (id: string) => {
-    if (!confirm("Delete this item?")) return;
-    setErr("");
-    const { error } = await supabase.from(section.table).delete().eq("id", id);
-    if (error) { setErr(error.message); return; }
-    await load();
-  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -218,21 +171,190 @@ function AdminPage() {
       </div>
 
       <div className="mt-6 flex flex-wrap gap-2 border-b border-border">
+        <TabButton active={active === "homepage"} onClick={() => setActive("homepage")} label="Homepage" />
         {SECTIONS.map((s) => (
-          <button
-            key={s.key}
-            onClick={() => setActive(s.key)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition ${
-              active === s.key
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {s.label}
-          </button>
+          <TabButton key={s.key} active={active === s.key} onClick={() => setActive(s.key)} label={s.label} />
         ))}
       </div>
 
+      {active === "homepage" ? (
+        <HomepageEditor />
+      ) : (
+        <CollectionEditor section={SECTIONS.find((s) => s.key === active)!} />
+      )}
+    </section>
+  );
+}
+
+function TabButton({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition ${
+        active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function HomepageEditor() {
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    supabase.from("site_content").select("key,value").then(({ data }) => {
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((r: { key: string; value: string }) => { map[r.key] = r.value; });
+      setValues(map);
+      setLoading(false);
+    });
+  }, []);
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr(""); setMsg("");
+    try {
+      const rows = HOMEPAGE_FIELDS.map((f) => ({ key: f.key, value: values[f.key] ?? "" }));
+      const { error } = await supabase.from("site_content").upsert(rows, { onConflict: "key" });
+      if (error) throw new Error(error.message);
+      setMsg("Saved.");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Save failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (loading) return <p className="mt-6 text-sm text-muted-foreground">Loading…</p>;
+
+  return (
+    <form onSubmit={save} className="mt-6 rounded-2xl border border-border bg-card p-6 space-y-4">
+      <h2 className="text-lg font-semibold">Homepage content</h2>
+      {HOMEPAGE_FIELDS.map((f) => {
+        const value = values[f.key] ?? "";
+        if (f.type === "image") {
+          return (
+            <div key={f.key}>
+              <label className="block text-sm font-medium">{f.label}</label>
+              <div className="mt-1 flex flex-col gap-2">
+                {value && <img src={value} alt="" className="h-32 w-auto rounded-md border border-border object-cover" />}
+                <div className="flex gap-2">
+                  <input
+                    value={value}
+                    onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                    placeholder="https://…"
+                    className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  />
+                  <ImageUploader onUploaded={(url) => setValues({ ...values, [f.key]: url })} />
+                </div>
+              </div>
+            </div>
+          );
+        }
+        if (f.type === "textarea") {
+          return (
+            <div key={f.key}>
+              <label className="block text-sm font-medium">{f.label}</label>
+              <textarea
+                rows={3}
+                value={value}
+                onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+              />
+            </div>
+          );
+        }
+        return (
+          <div key={f.key}>
+            <label className="block text-sm font-medium">{f.label}</label>
+            <input
+              value={value}
+              onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            />
+          </div>
+        );
+      })}
+      {err && <p className="text-sm text-destructive">{err}</p>}
+      {msg && <p className="text-sm text-primary">{msg}</p>}
+      <button
+        type="submit"
+        disabled={busy}
+        className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+      >
+        {busy ? "Saving…" : "Save homepage"}
+      </button>
+    </form>
+  );
+}
+
+function CollectionEditor({ section }: { section: SectionConfig }) {
+  const [rows, setRows] = useState<AnyRow[]>([]);
+  const [editing, setEditing] = useState<AnyRow | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState<Record<string, unknown>>({});
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  const load = async () => {
+    setErr("");
+    const { data, error } = await supabase.from(section.table).select("*").order(section.orderBy);
+    if (error) setErr(error.message);
+    setRows((data ?? []) as AnyRow[]);
+  };
+
+  useEffect(() => {
+    setEditing(null);
+    setCreating(false);
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section.key]);
+
+  const startEdit = (row: AnyRow) => { setEditing(row); setCreating(false); setForm({ ...row }); };
+  const startCreate = () => { setCreating(true); setEditing(null); setForm({ ...emptyForm(section), sort_order: rows.length + 1 }); };
+  const cancel = () => { setEditing(null); setCreating(false); };
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr("");
+    try {
+      const payload: Record<string, unknown> = {};
+      for (const fd of section.fields) payload[fd.key] = form[fd.key];
+
+      const table = supabase.from(section.table) as unknown as {
+        update: (v: Record<string, unknown>) => { eq: (col: string, val: string) => Promise<{ error: { message: string } | null }> };
+        insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }>;
+      };
+
+      if (editing) {
+        const { error } = await table.update(payload).eq("id", editing.id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await table.insert(payload);
+        if (error) throw new Error(error.message);
+      }
+      await load();
+      cancel();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Save failed");
+    } finally { setBusy(false); }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this item?")) return;
+    setErr("");
+    const { error } = await supabase.from(section.table).delete().eq("id", id);
+    if (error) { setErr(error.message); return; }
+    await load();
+  };
+
+  return (
+    <>
       {err && <p className="mt-4 text-sm text-destructive">{err}</p>}
 
       {!editing && !creating && (
@@ -281,6 +403,50 @@ function AdminPage() {
                     className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-mono"
                     placeholder="One item per line"
                   />
+                </div>
+              );
+            }
+            if (fd.type === "image-list") {
+              const photos = Array.isArray(value) ? (value as string[]) : [];
+              return (
+                <div key={fd.key}>
+                  <label className="block text-sm font-medium">{fd.label}</label>
+                  <div className="mt-2 space-y-2">
+                    {photos.map((url, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <img src={url} alt="" className="h-12 w-16 rounded-md border border-border object-cover" />
+                        <input
+                          value={url}
+                          onChange={(e) => {
+                            const next = [...photos];
+                            next[i] = e.target.value;
+                            setForm({ ...form, [fd.key]: next });
+                          }}
+                          className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-xs"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm({ ...form, [fd.key]: photos.filter((_, j) => j !== i) })}
+                          className="p-2 text-destructive hover:bg-destructive/10 rounded-md"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <ImageUploader
+                        label="Upload photo"
+                        onUploaded={(url) => setForm({ ...form, [fd.key]: [...photos, url] })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, [fd.key]: [...photos, ""] })}
+                        className="text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted"
+                      >
+                        + Add URL
+                      </button>
+                    </div>
+                  </div>
                 </div>
               );
             }
@@ -337,6 +503,6 @@ function AdminPage() {
           </article>
         ))}
       </div>
-    </section>
+    </>
   );
 }
