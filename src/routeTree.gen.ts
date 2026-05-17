@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsefulLinksRouteImport } from './routes/useful-links'
 import { Route as RecommendedRouteImport } from './routes/recommended'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MembersRouteImport } from './routes/members'
@@ -21,6 +22,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecommendedSlugRouteImport } from './routes/recommended.$slug'
 import { Route as ApprovedSlugRouteImport } from './routes/approved.$slug'
 
+const UsefulLinksRoute = UsefulLinksRouteImport.update({
+  id: '/useful-links',
+  path: '/useful-links',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecommendedRoute = RecommendedRouteImport.update({
   id: '/recommended',
   path: '/recommended',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
   fileRoutesById: FileRoutesById
@@ -169,10 +181,18 @@ export interface RootRouteChildren {
   MembersRoute: typeof MembersRoute
   PrivacyRoute: typeof PrivacyRoute
   RecommendedRoute: typeof RecommendedRouteWithChildren
+  UsefulLinksRoute: typeof UsefulLinksRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/useful-links': {
+      id: '/useful-links'
+      path: '/useful-links'
+      fullPath: '/useful-links'
+      preLoaderRoute: typeof UsefulLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recommended': {
       id: '/recommended'
       path: '/recommended'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   MembersRoute: MembersRoute,
   PrivacyRoute: PrivacyRoute,
   RecommendedRoute: RecommendedRouteWithChildren,
+  UsefulLinksRoute: UsefulLinksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
