@@ -132,6 +132,28 @@ function AuthPage() {
           </div>
         )}
 
+        {mode === "signup" && (
+          <div>
+            <label className="block text-sm font-medium text-foreground">Profile picture (optional)</label>
+            <div className="mt-2 flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-muted border border-border overflow-hidden flex items-center justify-center">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-xs text-muted-foreground">No image</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onAvatarChange}
+                className="text-xs file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-primary-foreground hover:file:bg-primary/90"
+              />
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">JPG or PNG, up to 5MB.</p>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-foreground">Email</label>
           <input
