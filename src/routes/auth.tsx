@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "../integrations/supabase/client";
 import { createFileRoute } from "@tanstack/react-router";
 
@@ -26,6 +26,8 @@ function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState("");
   const [success, setSuccess] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
 
   const {
     register,
@@ -35,6 +37,17 @@ function AuthPage() {
   } = useForm<FormValues>();
 
   const password = watch("password");
+
+  const onAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setServerError("Image must be 5MB or smaller");
+      return;
+    }
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
 
   const onSubmit = async (data: FormValues) => {
     setServerError("");
@@ -47,15 +60,32 @@ function AuthPage() {
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data: signUpData, error } = await supabase.auth.signUp({
           email: data.email,
           password: data.password,
-          options: {
-            data: { name: data.name },
-          },
+          options: { data: { name: data.name } },
         });
 
         if (error) throw error;
+
+        const userId = signUpData.user?.id;
+        if (userId && avatarFile) {
+          const ext = avatarFile.name.split(".").pop()?.toLowerCase() || "jpg";
+          const path = `${userId}/avatar.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("avatars")
+            .upload(path, avatarFile, { upsert: true, contentType: avatarFile.type });
+          if (!upErr) {
+            const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+            await supabase
+              .from("profiles")
+              .upsert({ user_id: userId, display_name: data.name ?? "", avatar_url: pub.publicUrl }, { onConflict: "user_id" });
+          }
+        } else if (userId && data.name) {
+          await supabase
+            .from("profiles")
+            .upsert({ user_id: userId, display_name: data.name }, { onConflict: "user_id" });
+        }
 
         setSuccess("Account created! Redirecting…");
       } else {
@@ -70,8 +100,8 @@ function AuthPage() {
       }
 
       setTimeout(() => navigate({ to: "/members" }), 1200);
-    } catch (err: any) {
-      setServerError(err.message || "Authentication failed");
+    } catch (err: unknown) {
+      setServerError(err instanceof Error ? err.message : "Authentication failed");
     }
   };
 
@@ -99,6 +129,28 @@ function AuthPage() {
             {errors.name && (
               <p className="text-xs text-destructive mt-1">Name is required</p>
             )}
+          </div>
+        )}
+
+        {mode === "signup" && (
+          <div>
+            <label className="block text-sm font-medium text-foreground">Profile picture (optional)</label>
+            <div className="mt-2 flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-muted border border-border overflow-hidden flex items-center justify-center">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-xs text-muted-foreground">No image</span>
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onAvatarChange}
+                className="text-xs file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-primary-foreground hover:file:bg-primary/90"
+              />
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">JPG or PNG, up to 5MB.</p>
           </div>
         )}
 
