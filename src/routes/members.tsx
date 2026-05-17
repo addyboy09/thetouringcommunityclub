@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { ShieldCheck, Tag, Users, MapPin, Camera, Link2 } from "lucide-react";
+import { ShieldCheck, Tag, Users, MapPin, Camera } from "lucide-react";
 
 export const Route = createFileRoute("/members")({
   component: MembersPage,
