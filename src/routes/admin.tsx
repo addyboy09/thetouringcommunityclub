@@ -14,9 +14,9 @@ type FieldType = "text" | "number" | "textarea" | "list" | "image" | "image-list
 type FieldDef = { key: string; label: string; type: FieldType; required?: boolean };
 
 type SectionConfig = {
-  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts";
+  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts" | "useful_links";
   label: string;
-  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts";
+  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts" | "useful_links";
   orderBy: string;
   titleKey: string;
   subtitleKeys: string[];
@@ -94,6 +94,21 @@ const SECTIONS: SectionConfig[] = [
       { key: "category", label: "Category", type: "text" },
       { key: "off", label: "Off (e.g. 15% or £5 off)", type: "text" },
       { key: "code", label: "Code", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  {
+    key: "useful_links",
+    label: "Useful Links",
+    table: "useful_links",
+    orderBy: "sort_order",
+    titleKey: "title",
+    subtitleKeys: ["category", "url"],
+    fields: [
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "url", label: "URL", type: "text", required: true },
+      { key: "category", label: "Category", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
