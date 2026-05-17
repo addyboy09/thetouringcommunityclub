@@ -7,6 +7,7 @@ const navItems = [
   { to: "/approved", label: "Approved Sites" },
   { to: "/meetups", label: "Meet Ups" },
   { to: "/discounts", label: "Discounts" },
+  { to: "/useful-links", label: "Useful Links" },
 ] as const;
 
 export function SiteLayout() {
