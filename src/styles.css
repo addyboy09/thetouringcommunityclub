@@ -1,6 +1,12 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap");
+
+@theme inline {
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Figtree", ui-sans-serif, system-ui, sans-serif;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -62,29 +68,33 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.94 0.018 85);
-  --foreground: oklch(0.22 0.02 150);
-  --card: oklch(0.98 0.008 85);
-  --card-foreground: oklch(0.22 0.02 150);
-  --popover: oklch(0.98 0.008 85);
-  --popover-foreground: oklch(0.22 0.02 150);
-  --primary: oklch(0.45 0.11 150);
-  --primary-foreground: oklch(0.98 0.01 85);
-  --secondary: oklch(0.82 0.16 85);
-  --secondary-foreground: oklch(0.22 0.02 150);
-  --muted: oklch(0.91 0.018 85);
-  --muted-foreground: oklch(0.42 0.02 150);
-  --accent: oklch(0.7 0.13 235);
-  --accent-foreground: oklch(0.98 0.01 85);
+  --radius: 1rem;
+  /* Forest & Moss — outdoorsy, grounded, community */
+  --background: oklch(0.975 0.012 110);
+  --foreground: oklch(0.24 0.04 150);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.04 150);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.04 150);
+  --primary: oklch(0.42 0.08 150);
+  --primary-foreground: oklch(0.985 0.012 110);
+  --primary-glow: oklch(0.6 0.11 150);
+  --secondary: oklch(0.82 0.09 100);
+  --secondary-foreground: oklch(0.26 0.05 150);
+  --muted: oklch(0.94 0.012 110);
+  --muted-foreground: oklch(0.46 0.03 150);
+  --accent: oklch(0.68 0.13 60);
+  --accent-foreground: oklch(0.99 0.01 80);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.84 0.022 85);
-  --input: oklch(0.88 0.018 85);
-  --ring: oklch(0.45 0.11 150);
-  --gradient-hero: linear-gradient(135deg, oklch(0.45 0.11 150 / 0.85), oklch(0.7 0.13 235 / 0.6));
-  --gradient-warm: linear-gradient(135deg, oklch(0.82 0.16 85), oklch(0.72 0.17 70));
-  --shadow-soft: 0 8px 30px -8px oklch(0.22 0.02 150 / 0.2);
+  --border: oklch(0.88 0.02 120);
+  --input: oklch(0.9 0.018 120);
+  --ring: oklch(0.42 0.08 150);
+  --gradient-hero: linear-gradient(135deg, oklch(0.28 0.06 150 / 0.85), oklch(0.42 0.08 150 / 0.7) 55%, oklch(0.68 0.13 60 / 0.55));
+  --gradient-warm: linear-gradient(135deg, oklch(0.82 0.09 100), oklch(0.68 0.13 60));
+  --gradient-soft: linear-gradient(180deg, oklch(0.975 0.012 110), oklch(0.93 0.02 120));
+  --shadow-soft: 0 10px 30px -12px oklch(0.24 0.04 150 / 0.18);
+  --shadow-warm: 0 16px 40px -16px oklch(0.42 0.08 150 / 0.28);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -143,5 +153,12 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
