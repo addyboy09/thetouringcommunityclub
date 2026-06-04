@@ -513,6 +513,7 @@ function CollectionEditor({ section }: { section: SectionConfig }) {
                 </div>
               );
             }
+            return (
               <div key={fd.key}>
                 <label className="block text-sm font-medium">{fd.label}</label>
                 <input
