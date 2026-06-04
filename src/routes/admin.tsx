@@ -493,7 +493,26 @@ function CollectionEditor({ section }: { section: SectionConfig }) {
                 </div>
               );
             }
-            return (
+            if (fd.type === "image") {
+              const url = (value as string) ?? "";
+              return (
+                <div key={fd.key}>
+                  <label className="block text-sm font-medium">{fd.label}</label>
+                  <div className="mt-1 flex flex-col gap-2">
+                    {url && <img src={url} alt="" className="h-32 w-auto rounded-md border border-border object-cover" />}
+                    <div className="flex gap-2">
+                      <input
+                        value={url}
+                        onChange={(e) => setForm({ ...form, [fd.key]: e.target.value })}
+                        placeholder="https://…"
+                        className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      />
+                      <ImageUploader onUploaded={(u) => setForm({ ...form, [fd.key]: u })} />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
               <div key={fd.key}>
                 <label className="block text-sm font-medium">{fd.label}</label>
                 <input
