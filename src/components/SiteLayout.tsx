@@ -10,6 +10,8 @@ const navItems = [
   { to: "/meetups", label: "Meet Ups" },
   { to: "/discounts", label: "Discounts" },
   { to: "/useful-links", label: "Useful Links" },
+  { to: "/team", label: "Team" },
+  { to: "/gallery", label: "Gallery" },
 ] as const;
 
 export function SiteLayout() {
