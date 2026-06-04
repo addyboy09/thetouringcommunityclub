@@ -14,9 +14,9 @@ type FieldType = "text" | "number" | "textarea" | "list" | "image" | "image-list
 type FieldDef = { key: string; label: string; type: FieldType; required?: boolean };
 
 type SectionConfig = {
-  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts" | "useful_links";
+  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts" | "useful_links" | "team" | "gallery";
   label: string;
-  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts" | "useful_links";
+  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts" | "useful_links" | "team_members" | "gallery_photos";
   orderBy: string;
   titleKey: string;
   subtitleKeys: string[];
@@ -110,6 +110,34 @@ const SECTIONS: SectionConfig[] = [
       { key: "url", label: "URL", type: "text", required: true },
       { key: "category", label: "Category", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  {
+    key: "team",
+    label: "Meet the Team",
+    table: "team_members",
+    orderBy: "sort_order",
+    titleKey: "name",
+    subtitleKeys: ["role"],
+    fields: [
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "role", label: "Role", type: "text" },
+      { key: "bio", label: "Bio", type: "textarea" },
+      { key: "photo_url", label: "Photo", type: "image" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  {
+    key: "gallery",
+    label: "Photo Gallery",
+    table: "gallery_photos",
+    orderBy: "sort_order",
+    titleKey: "caption",
+    subtitleKeys: [],
+    fields: [
+      { key: "image_url", label: "Photo", type: "image", required: true },
+      { key: "caption", label: "Caption", type: "text" },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
