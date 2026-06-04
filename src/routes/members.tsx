@@ -133,7 +133,7 @@ function MemberCard({
   title,
   body,
 }: {
-  to: "/recommended" | "/approved" | "/discounts" | "/meetups";
+  to: "/recommended" | "/approved" | "/discounts" | "/meetups" | "/team" | "/gallery";
   icon: typeof MapPin;
   title: string;
   body: string;
