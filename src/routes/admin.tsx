@@ -14,9 +14,9 @@ type FieldType = "text" | "number" | "textarea" | "list" | "image" | "image-list
 type FieldDef = { key: string; label: string; type: FieldType; required?: boolean };
 
 type SectionConfig = {
-  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts" | "useful_links";
+  key: "homepage" | "meetups" | "recommended" | "approved" | "discounts" | "useful_links" | "team" | "gallery";
   label: string;
-  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts" | "useful_links";
+  table: "meetups" | "recommended_sites" | "approved_sites" | "discounts" | "useful_links" | "team_members" | "gallery_photos";
   orderBy: string;
   titleKey: string;
   subtitleKeys: string[];
@@ -110,6 +110,34 @@ const SECTIONS: SectionConfig[] = [
       { key: "url", label: "URL", type: "text", required: true },
       { key: "category", label: "Category", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  {
+    key: "team",
+    label: "Meet the Team",
+    table: "team_members",
+    orderBy: "sort_order",
+    titleKey: "name",
+    subtitleKeys: ["role"],
+    fields: [
+      { key: "name", label: "Name", type: "text", required: true },
+      { key: "role", label: "Role", type: "text" },
+      { key: "bio", label: "Bio", type: "textarea" },
+      { key: "photo_url", label: "Photo", type: "image" },
+      { key: "sort_order", label: "Sort order", type: "number" },
+    ],
+  },
+  {
+    key: "gallery",
+    label: "Photo Gallery",
+    table: "gallery_photos",
+    orderBy: "sort_order",
+    titleKey: "caption",
+    subtitleKeys: [],
+    fields: [
+      { key: "image_url", label: "Photo", type: "image", required: true },
+      { key: "caption", label: "Caption", type: "text" },
       { key: "sort_order", label: "Sort order", type: "number" },
     ],
   },
@@ -460,6 +488,26 @@ function CollectionEditor({ section }: { section: SectionConfig }) {
                       >
                         + Add URL
                       </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            if (fd.type === "image") {
+              const url = (value as string) ?? "";
+              return (
+                <div key={fd.key}>
+                  <label className="block text-sm font-medium">{fd.label}</label>
+                  <div className="mt-1 flex flex-col gap-2">
+                    {url && <img src={url} alt="" className="h-32 w-auto rounded-md border border-border object-cover" />}
+                    <div className="flex gap-2">
+                      <input
+                        value={url}
+                        onChange={(e) => setForm({ ...form, [fd.key]: e.target.value })}
+                        placeholder="https://…"
+                        className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      />
+                      <ImageUploader onUploaded={(u) => setForm({ ...form, [fd.key]: u })} />
                     </div>
                   </div>
                 </div>

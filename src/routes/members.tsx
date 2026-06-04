@@ -107,6 +107,8 @@ function MembersPage() {
         <MemberCard to="/approved" icon={ShieldCheck} title="Club Approved" body="Sites visited and approved by our team." />
         <MemberCard to="/discounts" icon={Tag} title="Member Discounts" body="Exclusive savings on pitches and gear." />
         <MemberCard to="/meetups" icon={Users} title="Community Meet Ups" body="Find your next rally or weekend gathering." />
+        <MemberCard to="/team" icon={Users} title="Meet the Team" body="The friendly faces running the club." />
+        <MemberCard to="/gallery" icon={Camera} title="Photo Gallery" body="Snapshots from our trips and meet ups." />
       </div>
 
       <div className="mt-10">
@@ -131,7 +133,7 @@ function MemberCard({
   title,
   body,
 }: {
-  to: "/recommended" | "/approved" | "/discounts" | "/meetups";
+  to: "/recommended" | "/approved" | "/discounts" | "/meetups" | "/team" | "/gallery";
   icon: typeof MapPin;
   title: string;
   body: string;
