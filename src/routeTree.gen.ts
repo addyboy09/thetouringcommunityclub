@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsefulLinksRouteImport } from './routes/useful-links'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as RecommendedRouteImport } from './routes/recommended'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as MeetupsRouteImport } from './routes/meetups'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as DiscountsRouteImport } from './routes/discounts'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ApprovedRouteImport } from './routes/approved'
@@ -25,6 +27,11 @@ import { Route as ApprovedSlugRouteImport } from './routes/approved.$slug'
 const UsefulLinksRoute = UsefulLinksRouteImport.update({
   id: '/useful-links',
   path: '/useful-links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecommendedRoute = RecommendedRouteImport.update({
@@ -45,6 +52,11 @@ const MembersRoute = MembersRouteImport.update({
 const MeetupsRoute = MeetupsRouteImport.update({
   id: '/meetups',
   path: '/meetups',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscountsRoute = DiscountsRouteImport.update({
@@ -89,10 +101,12 @@ export interface FileRoutesByFullPath {
   '/approved': typeof ApprovedRouteWithChildren
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
+  '/gallery': typeof GalleryRoute
   '/meetups': typeof MeetupsRoute
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/team': typeof TeamRoute
   '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -103,10 +117,12 @@ export interface FileRoutesByTo {
   '/approved': typeof ApprovedRouteWithChildren
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
+  '/gallery': typeof GalleryRoute
   '/meetups': typeof MeetupsRoute
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/team': typeof TeamRoute
   '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -118,10 +134,12 @@ export interface FileRoutesById {
   '/approved': typeof ApprovedRouteWithChildren
   '/auth': typeof AuthRoute
   '/discounts': typeof DiscountsRoute
+  '/gallery': typeof GalleryRoute
   '/meetups': typeof MeetupsRoute
   '/members': typeof MembersRoute
   '/privacy': typeof PrivacyRoute
   '/recommended': typeof RecommendedRouteWithChildren
+  '/team': typeof TeamRoute
   '/useful-links': typeof UsefulLinksRoute
   '/approved/$slug': typeof ApprovedSlugRoute
   '/recommended/$slug': typeof RecommendedSlugRoute
@@ -134,10 +152,12 @@ export interface FileRouteTypes {
     | '/approved'
     | '/auth'
     | '/discounts'
+    | '/gallery'
     | '/meetups'
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/team'
     | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -148,10 +168,12 @@ export interface FileRouteTypes {
     | '/approved'
     | '/auth'
     | '/discounts'
+    | '/gallery'
     | '/meetups'
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/team'
     | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -162,10 +184,12 @@ export interface FileRouteTypes {
     | '/approved'
     | '/auth'
     | '/discounts'
+    | '/gallery'
     | '/meetups'
     | '/members'
     | '/privacy'
     | '/recommended'
+    | '/team'
     | '/useful-links'
     | '/approved/$slug'
     | '/recommended/$slug'
@@ -177,10 +201,12 @@ export interface RootRouteChildren {
   ApprovedRoute: typeof ApprovedRouteWithChildren
   AuthRoute: typeof AuthRoute
   DiscountsRoute: typeof DiscountsRoute
+  GalleryRoute: typeof GalleryRoute
   MeetupsRoute: typeof MeetupsRoute
   MembersRoute: typeof MembersRoute
   PrivacyRoute: typeof PrivacyRoute
   RecommendedRoute: typeof RecommendedRouteWithChildren
+  TeamRoute: typeof TeamRoute
   UsefulLinksRoute: typeof UsefulLinksRoute
 }
 
@@ -191,6 +217,13 @@ declare module '@tanstack/react-router' {
       path: '/useful-links'
       fullPath: '/useful-links'
       preLoaderRoute: typeof UsefulLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recommended': {
@@ -219,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/meetups'
       fullPath: '/meetups'
       preLoaderRoute: typeof MeetupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discounts': {
@@ -303,12 +343,24 @@ const rootRouteChildren: RootRouteChildren = {
   ApprovedRoute: ApprovedRouteWithChildren,
   AuthRoute: AuthRoute,
   DiscountsRoute: DiscountsRoute,
+  GalleryRoute: GalleryRoute,
   MeetupsRoute: MeetupsRoute,
   MembersRoute: MembersRoute,
   PrivacyRoute: PrivacyRoute,
   RecommendedRoute: RecommendedRouteWithChildren,
+  TeamRoute: TeamRoute,
   UsefulLinksRoute: UsefulLinksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
